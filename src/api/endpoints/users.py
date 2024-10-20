@@ -3,9 +3,9 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("api/health")
-async def health_check():
-    return {"message": "API is healthy"}
+@router.get("api/is_alive")
+async def is_alive():
+    return {"message": "API is live"}
 
 @router.post("/api/users")
 async def create_user():
