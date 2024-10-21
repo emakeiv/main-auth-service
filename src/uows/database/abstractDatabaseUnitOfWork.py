@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 
-
-class AbstractDatabaseUnitOfWokr(ABC):
+class AbstractDatabaseUnitOfWork(ABC):
       def __enter__(self):
             return self
-      
-      def __exit__(self, *args):
+
+      def __exit__(self, args*):
             self.rollback()
 
       @abstractmethod
@@ -14,4 +13,5 @@ class AbstractDatabaseUnitOfWokr(ABC):
       
       def rollback(self):
             raise NotImplementedError
+
       
