@@ -1,3 +1,5 @@
+from typing import List
+
 from dal.models.user import User
 from abstract_repo import AbstractRepository
 
@@ -16,11 +18,14 @@ class UserRepository(AbstractRepository):
       
       def get(self, user_id: int):
             return self.session.query(User).filter_by(reference=user_id).one()
-      def list(self):
-            pass
+      def list(self) -> List[User]:
+            return self.session.query(User).all()
       
-      def update(self):
+      def update(self, user_id: int, user: User):
             pass
 
-      def delete(selfs):
-            pass
+      def delete(self, user_id: int) -> None:
+            user = self.get(user_id)
+            if user:
+                  self.session.delete(user)
+                  self.session.commit()
