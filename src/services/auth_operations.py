@@ -2,6 +2,7 @@
 from typing import List, Optional
 from dal.models.user import User
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
+from src.services.exceptions import DuplicateEmailError
 
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
@@ -21,7 +22,7 @@ class UserService:
                         uow.commit()
                   except IntegrityError as e:
                         uow.rollback()
-                        raise ValueError("A user with this email already exists") from e
+                        raise DuplicateEmailError("A user with this email already exists") from e
 
             return new_user
 

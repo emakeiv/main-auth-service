@@ -1,5 +1,23 @@
 
-from fastapi import APIRouter
+from fastapi import (
+      APIRouter, 
+      Depends, 
+      Request, 
+      Response,
+      HTTPException
+)
+from fastapi import status
+
+from src.api.schemas.users import (
+    UserSchema,
+    UsersListSchema,
+    UserResponseSchema
+) 
+
+from src.uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
+from src.services.auth_operations import UserService
+from src.services.exceptions import DuplicateEmailError
+from src.api.dependencies import get_uow 
 
 router = APIRouter()
 
@@ -7,11 +25,16 @@ router = APIRouter()
 async def is_alive():
     return {"message": "API is live"}
 
-@router.post("/api/users")
-async def create_user():
-    return {"message": "create user endpoint"}
+@router.post("/api/users", response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
+async def create_user(user: UserSchema, uow: DatabaseUnitOfWork = Depends(get_uow)):
+    user_service = UserService(uow)
+    try:
+        new_user = user_service.create_user(user)
+        return new_user
+    except DuplicateEmailError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-@router.get("/api/users/profile")
+@router.get("/api/users/{user_id}")
 async def get_user():
     return {"message": "user profile endpoint"}
 
