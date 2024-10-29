@@ -6,6 +6,7 @@ SQLAlchemy==2.0.36
 pydantic==2.9.2
 psycopg2==2.9.10
 alembic==1.13.3
+uvicorn
 fastapi==0.115.2
 pylint==3.2.7
 pytest==8.3.3

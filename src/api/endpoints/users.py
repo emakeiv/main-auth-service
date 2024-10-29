@@ -9,20 +9,20 @@ async def is_alive():
 
 @router.post("/api/users")
 async def create_user():
-    return {"message": "user created successfully"}
+    return {"message": "create user endpoint"}
 
 @router.get("/api/users/profile")
 async def get_user():
-    return {"message": "user profile"}
+    return {"message": "user profile endpoint"}
 
 @router.post("api/users/generate_otp")
 async def generate_otp():
-    return {"message": "otp generated successfully"}
+    return {"message": "generatee otp  endpoint"}
 
 @router.post("api/users/verify_otp")
 async def verify_otp():
-    return {"message": "otp verified successfully"}
+    return {"message": "verify otp  endpoint"}
 
 @router.post("api/token")
 async def generate_token():
-    return {"message": "token generated successfully"}
+    return {"message": "generate token endpoint"}
