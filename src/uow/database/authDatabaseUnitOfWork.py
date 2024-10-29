@@ -13,7 +13,7 @@ class DatabaseUnitOfWork(AbstractDatabaseUnitOfWork):
             return super().__enter__()
       
       def __exit__(self, *args):
-            return super().__exit__(*args)
+            super().__exit__(*args)
             self.session.close()
 
       def commit(self):
