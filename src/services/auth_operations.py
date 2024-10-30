@@ -10,12 +10,11 @@ class UserService:
 
       def __init__(self, uow: DatabaseUnitOfWork):
             self.uow = uow
-      def create_user(self, username:str, email: str, password:str):
+      def create_user(self, username: str, email: str, password: str) -> User:
             new_user = User(
                   username=username, 
-                  email=email,
-                  password=password
-            )
+                  email=email, 
+                  password=password)
             with self.uow as uow:
                   try:
                         uow.repos.add(new_user)

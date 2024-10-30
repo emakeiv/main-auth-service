@@ -3,8 +3,8 @@ from datetime import datetime
 
 @dataclass
 class User:
-      id: int
-      name: str
+      user_id: int
+      username: str
       email: str
       password: str
       created_at: datetime
@@ -13,8 +13,8 @@ class User:
 
       def dict(self):
             return {
-                  "id": self.id,
-                  "name": self.name,
+                  "id": self.user_id,
+                  "name": self.username,
                   "email": self.email,
                   "password": self.password,
                   "created_at": self.created_at,

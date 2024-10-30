@@ -1,5 +1,5 @@
 
-from abstractDatabaseUnitOfWork import AbstractDatabaseUnitOfWork
+from src.uow.database.abstractDatabaseUnitOfWork import AbstractDatabaseUnitOfWork
 from dal.repos.user_repo import UserRepository
 from src.dal.db import factorySettings as database_factory
 

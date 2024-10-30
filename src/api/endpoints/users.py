@@ -29,7 +29,7 @@ async def is_alive():
 async def create_user(user: UserSchema, uow: DatabaseUnitOfWork = Depends(get_uow)):
     user_service = UserService(uow)
     try:
-        new_user = user_service.create_user(user)
+        new_user = user_service.create_user(**user.model_dump())
         return new_user
     except DuplicateEmailError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

@@ -1,7 +1,7 @@
 from typing import List
 
 from dal.models.user import User
-from abstract_repo import AbstractRepository
+from dal.repos.abstract_repo import AbstractRepository
 
 
 class UserRepository(AbstractRepository):
