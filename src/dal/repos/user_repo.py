@@ -10,7 +10,8 @@ class UserRepository(AbstractRepository):
             self.session = session
 
       def add(self, user):
-            try:
+            try:  
+                  # print(f"will try to add this {user} to the database")
                   self.session.add(user)
             except Exception as e:
                   print(e)

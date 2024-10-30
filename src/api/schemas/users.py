@@ -21,3 +21,7 @@ class UserResponseSchema(BaseModel):
     username: str
     email: str
     created_at: datetime
+    edited_at: datetime
+    
+    class Config:
+        orm_mode = True

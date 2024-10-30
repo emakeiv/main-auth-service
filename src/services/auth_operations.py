@@ -15,15 +15,19 @@ class UserService:
                   username=username, 
                   email=email, 
                   password=password)
+            
             with self.uow as uow:
-                  try:
+                  try:  
+                        # print(f"user: {new_user.dict()}")
                         uow.repos.add(new_user)
                         uow.commit()
+                        return new_user.dict()
                   except IntegrityError as e:
                         uow.rollback()
+                        # print(f'the error: {e}')
                         raise DuplicateEmailError("A user with this email already exists") from e
 
-            return new_user
+        
 
       def get_user(self, user_id:int) -> Optional[User]:
             with self.uow as uow:
