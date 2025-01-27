@@ -11,6 +11,7 @@ uvicorn==0.32.0
 fastapi==0.115.2
 pylint==3.2.7
 pytest==8.3.3
+bcrypt==4.2.1
 black==24.8.0
 PyJWT==2.9.0
 fire==0.7.0

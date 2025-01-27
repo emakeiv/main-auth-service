@@ -1,23 +1,23 @@
 
 from fastapi import (
-      APIRouter, 
-      Depends, 
+      status,
       Request, 
+      Depends, 
       Response,
+      APIRouter, 
       HTTPException
 )
-from fastapi import status
 
-from src.api.schemas.users import (
+from api.schemas.users import (
     UserSchema,
     UsersListSchema,
     UserResponseSchema
 ) 
 
-from src.uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from src.services.auth_operations import UserService
-from src.services.exceptions import DuplicateEmailError
-from src.api.dependencies import get_uow 
+from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
+from services.auth_operations import UserService
+from services.exceptions import DuplicateEmailError
+from api.dependencies import get_uow 
 
 router = APIRouter(
     prefix="/signup",

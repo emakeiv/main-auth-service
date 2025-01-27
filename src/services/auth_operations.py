@@ -1,5 +1,7 @@
 
+import bcrypt
 from typing import List, Optional
+
 from dal.models.user import User
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
 from src.services.exceptions import DuplicateEmailError
@@ -7,14 +9,21 @@ from src.services.exceptions import DuplicateEmailError
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 class UserService:
-
+      
       def __init__(self, uow: DatabaseUnitOfWork):
             self.uow = uow
+      
+      def hash_password(self, password: str) -> str:
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed_password.decode('utf-8')
+
       def create_user(self, username: str, email: str, password: str) -> User:
+            hashed_password = self.hash_password(password)
             new_user = User(
                   username=username, 
                   email=email, 
-                  password=password)
+                  password=hashed_password)
             
             with self.uow as uow:
                   try:  
