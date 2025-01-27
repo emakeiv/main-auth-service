@@ -7,6 +7,8 @@ from src.api.endpoints import (
       login,
       signin
 )
+
+from src.dal.orm.mapper import start_mappers
 def create_server():
       server = FastAPI(debug=True)
       server.include_router(signin.router, prefix="/v1")
@@ -15,4 +17,5 @@ def create_server():
       server.include_router(health.router, prefix="/v1")
       return server
 
+map = start_mappers()
 app = create_server()
