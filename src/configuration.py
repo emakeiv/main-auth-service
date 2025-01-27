@@ -1,5 +1,7 @@
-from pydantic_settings import BaseSettings
+import os 
+import sys
 
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     environment: str
@@ -18,3 +20,5 @@ class Settings(BaseSettings):
 
 settings = Settings()
 # print(f"Loaded settings: {settings.dict()}")
+if settings.pythonpath not in sys.path:
+    sys.path.append(os.path.abspath(settings.pythonpath))

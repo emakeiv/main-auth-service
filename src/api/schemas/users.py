@@ -1,15 +1,21 @@
-from pydantic import BaseModel, EmailStr, StringConstraints , Field
+from pydantic import (
+    BaseModel, 
+    EmailStr, 
+    SecretStr,
+    Field
+)
+
 from typing_extensions import Annotated
 from datetime import datetime
 from typing import List
 
-UsernameConstrainedStr = Annotated[str, StringConstraints(min_length=1, max_length=255)]
-PasswordConstrainedStr = Annotated[str, StringConstraints(min_length=6)]
+UsernameConstrainedStr = Annotated[str, Field(min_length=1, max_length=255)]
+PasswordConstrainedStr = Annotated[str, Field(..., min_length=8)]
 
 class UserSchema(BaseModel):
     username: UsernameConstrainedStr
-    email: EmailStr
-    password: PasswordConstrainedStr
+    email: EmailStr = Field(...)
+    password: SecretStr = PasswordConstrainedStr
   
 
 

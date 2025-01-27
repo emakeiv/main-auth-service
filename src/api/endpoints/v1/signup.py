@@ -20,8 +20,8 @@ from src.services.exceptions import DuplicateEmailError
 from src.api.dependencies import get_uow 
 
 router = APIRouter(
-    prefix="/signin",
-    tags=["signin"],
+    prefix="/signup",
+    tags=["signup"],
     responses={404: {"description": "Not found"}},
 )
 
