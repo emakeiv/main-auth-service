@@ -9,6 +9,7 @@ from dal.orm.mapper import start_mappers
 
 def start_api():
     settings = get_settings()
+    print(f"loaded settings: {settings.dict()}")
     print(f"Starting API in {settings.environment} mode")
     uvicorn.run("api.server:app", host="0.0.0.0", port=8080, reload=True)
 

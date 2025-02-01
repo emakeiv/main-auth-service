@@ -21,11 +21,9 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-
+# https://docs.python.org/3/library/functools.html
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
 
-# # print(f"Loaded settings: {settings.dict()}")
-# if settings.pythonpath not in sys.path:
-#     sys.path.append(os.path.abspath(settings.pythonpath))
+
