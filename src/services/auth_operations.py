@@ -1,63 +1,51 @@
 
+import jwt
 import bcrypt
-from typing import List, Optional
+from  datetime import datetime, timedelta
 
 from dal.models.user import User
+from env_configuration import get_settings
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from src.services.exceptions import DuplicateEmailError
 
-from sqlalchemy.exc import IntegrityError, NoResultFound
-
-class UserService:
-      
+class AuthService():
       def __init__(self, uow: DatabaseUnitOfWork):
-            self.uow = uow
-      
-      def hash_password(self, password: str) -> str:
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed_password.decode('utf-8')
-
-      def create_user(self, username: str, email: str, password: str) -> User:
-            hashed_password = self.hash_password(password)
-            new_user = User(
-                  username=username, 
-                  email=email, 
-                  password=hashed_password)
-            
-            with self.uow as uow:
-                  try:  
-                        # print(f"user: {new_user.dict()}")
-                        uow.repos.add(new_user)
-                        uow.commit()
-                        return new_user.dict()
-                  except IntegrityError as e:
-                        uow.rollback()
-                        # print(f'the error: {e}')
-                        raise DuplicateEmailError("A user with this email already exists") from e
-
+                self.uow = uow
+                self.settings = get_settings() 
         
+      def hash_password(self, password: str) -> str:
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+            return hashed_password.decode('utf-8')
 
-      def get_user(self, user_id:int) -> Optional[User]:
-            with self.uow as uow:
-                  try:
-                        user = uow.repos.get(user_id)
-                  except NoResultFound:
-                        raise NoResultFound(f"User with ID {user_id} not found")
-              
-            return user
-      def list_users(self) -> List[User]:
-            with self.uow as uow:
-                  users = uow.repos.list()
-            return users
-
-      def update_user(self):
-            pass
-
-      def delete_user(self, user_id:int) -> None:
-            with self.uow as uow:
-                  user = uow.repos.get(user_id)
+      def match_password(self, plain_password: str, hashed_password: str) -> bool:
+        return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+      
+      def authenticate_user(self, reference: str, password:str) -> User:
+            with self.uow as uow:      
+                  user = uow.repos.get(reference) 
                   if not user:
-                        raise NoResultFound(f"User with ID {user_id} not found.")
-                  uow.repos.delete(user_id)
-                  uow.commit()
+                        raise ValueError("Invalid email or password")                       
+                  if not self.match_password(password, user.password):
+                        raise ValueError("Invalid email or password")                        
+                  return user
+
+      def encode(self, user:User, admin:bool):
+            now = datetime.now(tz=datetime.timezone.utc)
+            payload = {
+                  "sub": user.email,
+                  "user_id": user.user_id,
+                  "exp": now + timedelta(minutes=self.settings.access_token_expire_minutes),
+                  "iat": now,
+                  "admin": admin
+            }
+            return jwt.encode(payload, self.settings.secret_key, algorithm=self.settings.algorithm)
+      
+      def decode(self, encoded_data):
+            try:
+                  decoded = jwt.decode(encoded_data, self.setting.secret_key, algorithm=self.settings.algorithm)
+            except jwt.ExpiredSignatureError:
+                  raise ValueError("Token has expired")
+            except jwt.InvalidTokenError:
+                  raise ValueError("Invalid token")
+            
+            return decoded

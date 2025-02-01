@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from dal.models.user import User
 from dal.repos.abstract_repo import AbstractRepository
@@ -17,8 +17,9 @@ class UserRepository(AbstractRepository):
                   print(e)
                   raise e
       
-      def get(self, user_id: int):
-            return self.session.query(User).filter_by(reference=user_id).one()
+      def get(self, reference: Any):
+            return self.session.query(User).filter_by(reference=reference).one()
+      
       def list(self) -> List[User]:
             return self.session.query(User).all()
       

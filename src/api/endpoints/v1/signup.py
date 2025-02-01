@@ -15,7 +15,7 @@ from api.schemas.users import (
 ) 
 
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from services.auth_operations import UserService
+from services.user_operations import UserService
 from services.exceptions import DuplicateEmailError
 from api.dependencies import get_uow 
 
@@ -26,7 +26,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserSchema, uow: DatabaseUnitOfWork = Depends(get_uow)):
+async def signup(user: UserSchema, uow: DatabaseUnitOfWork = Depends(get_uow)):
     user_service = UserService(uow)
     try:
         new_user = user_service.create_user(**user.model_dump())
