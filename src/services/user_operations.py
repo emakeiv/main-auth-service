@@ -1,33 +1,40 @@
 
 from typing import List, Optional
 
+from pydantic import (
+    SecretStr,
+    EmailStr
+)
+
 from dal.models.user import User
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
 from src.services.exceptions import DuplicateEmailError
 
 from sqlalchemy.exc import IntegrityError, NoResultFound
+from services.crypto_utils import (
+      hash_password
+)
 
 class UserService:
       
       def __init__(self, uow: DatabaseUnitOfWork):
             self.uow = uow
       
-      def create_user(self, username: str, email: str, password: str) -> User:
-            hashed_password = self.hash_password(password)
+      def create_user(self, username: str, email: EmailStr, password: SecretStr) -> User:
+            
+            hashed_password = hash_password(password.get_secret_value())
             new_user = User(
                   username=username, 
                   email=email, 
-                  password=hashed_password)
+                  hashed_password=hashed_password)
             
             with self.uow as uow:
-                  try:  
-                        # print(f"user: {new_user.dict()}")
+                  try:       
                         uow.repos.add(new_user)
                         uow.commit()
                         return new_user.dict()
                   except IntegrityError as e:
                         uow.rollback()
-                        # print(f'the error: {e}')
                         raise DuplicateEmailError("A user with this email already exists") from e
 
         

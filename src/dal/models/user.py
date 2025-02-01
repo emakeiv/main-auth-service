@@ -6,7 +6,7 @@ from typing import Optional
 class User:
     username: str
     email: str
-    password: str
+    hashed_password: str 
     user_id: Optional[int] = field(default=None)
     created_at: Optional[datetime] = field(default=None)
     edited_at: Optional[datetime] = field(default=None)
@@ -16,7 +16,7 @@ class User:
             "user_id": self.user_id,
             "username": self.username,
             "email": self.email,
-            "password": self.password,
+            "hashed_password": self.hashed_password,
             "created_at": self.created_at,
             "edited_at": self.edited_at
         }

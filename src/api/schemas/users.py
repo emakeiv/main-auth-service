@@ -9,15 +9,14 @@ from typing_extensions import Annotated
 from datetime import datetime
 from typing import List
 
-UsernameConstrainedStr = Annotated[str, Field(min_length=1, max_length=255)]
+UsernameConstrainedStr = Annotated[str, Field(..., min_length=1, max_length=255)]
 PasswordConstrainedStr = Annotated[str, Field(..., min_length=8)]
 
 class UserSchema(BaseModel):
     username: UsernameConstrainedStr
     email: EmailStr = Field(...)
-    password: SecretStr = PasswordConstrainedStr
+    password: SecretStr
   
-
 
 class UsersListSchema(BaseModel):
     users: List[UserSchema]

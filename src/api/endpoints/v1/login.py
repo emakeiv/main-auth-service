@@ -11,8 +11,9 @@ from api.dependencies import get_uow
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
 from services.user_operations import UserService
 from services.auth_operations import AuthService
-from api.schemas.users import (
-    UserSchema
+from api.schemas.token import (
+    TokenDataResponseSchema,
+    TokenResponseSchema
 )
 router = APIRouter(
     prefix="/login",
@@ -23,6 +24,9 @@ router = APIRouter(
 @router.post("/")
 async def login(request: Request, uow: DatabaseUnitOfWork = Depends(get_uow)):
     auth_header = request.headers.get("Authorization")
+    auth_service = AuthService(uow)
+
+    auth_service.authenticate_user()
     if not auth_header:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -32,6 +36,7 @@ async def login(request: Request, uow: DatabaseUnitOfWork = Depends(get_uow)):
         auth_type, credentials = auth_header.split(" ", 1)
         if auth_type.lower() != "bearer":
             raise ValueError("Invalid authorization type")
+        user = auth_service.authenticate_user(auth_header.username, auth_header.password)
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
