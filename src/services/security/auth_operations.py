@@ -3,15 +3,12 @@ import jwt
 import uuid
 from  datetime import datetime, timedelta
 
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from dal.models.user import User
 from env_configuration import get_settings
 from services.crypto.common_utils import match_password
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
 
 class AuthService():
       def __init__(self, uow: DatabaseUnitOfWork):
