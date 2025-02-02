@@ -8,10 +8,10 @@ from pydantic import (
 
 from dal.models.user import User
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from src.services.exceptions import DuplicateEmailError
+from services.crud.exceptions import DuplicateEmailError
 
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from services.crypto_utils import (
+from services.crypto.common_utils import (
       hash_password
 )
 

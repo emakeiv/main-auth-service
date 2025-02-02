@@ -15,8 +15,8 @@ from api.schemas.users import (
 ) 
 
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from services.user_operations import UserService
-from services.exceptions import DuplicateEmailError
+from services.crud.user_operations import UserService
+from services.crud.exceptions import DuplicateEmailError
 from api.dependencies import get_uow 
 
 router = APIRouter(

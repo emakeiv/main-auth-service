@@ -2,17 +2,16 @@
 import jwt
 import uuid
 from  datetime import datetime, timedelta
-from services.crypto_utils import (
-      match_password
-)
-from fastapi.security import(
-       OAuth2PasswordBearer, 
-       OAuth2PasswordRequestForm
-)
+
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from dal.models.user import User
 from env_configuration import get_settings
+from services.crypto.common_utils import match_password
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 class AuthService():
       def __init__(self, uow: DatabaseUnitOfWork):
@@ -36,13 +35,14 @@ class AuthService():
                   "user_id": user.user_id,
                   "iat": now.timestamp(),
                   "exp": now + timedelta(minutes=self.settings.access_token_expire_minutes),
-                  "scope": "openid"
+                  "scope": "openid",
+                  "admin": admin
             }
             return jwt.encode(payload, self.settings.secret_key, algorithm=self.settings.algorithm)
       
-      def decode(self, encoded_data):
+      def decode(self, token: str = Depends(oauth2_scheme)):
             try:
-                  decoded = jwt.decode(encoded_data, self.setting.secret_key, algorithm=self.settings.algorithm)
+                  decoded = jwt.decode(token, self.setting.secret_key, algorithm=self.settings.algorithm)
             except jwt.ExpiredSignatureError:
                   raise ValueError("Token has expired")
             except jwt.InvalidTokenError:

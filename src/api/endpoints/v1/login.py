@@ -7,26 +7,34 @@ from fastapi import (
     APIRouter, 
     HTTPException
 )
+
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from api.dependencies import get_uow 
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
-from services.user_operations import UserService
-from services.auth_operations import AuthService
+from services.crud.user_operations import UserService
+from services.security.auth_operations import AuthService
 from api.schemas.token import (
     TokenDataResponseSchema,
     TokenResponseSchema
 )
+
 router = APIRouter(
     prefix="/login",
     tags=["login"],
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/")
-async def login(request: Request, uow: DatabaseUnitOfWork = Depends(get_uow)):
-    auth_header = request.headers.get("Authorization")
-    auth_service = AuthService(uow)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
-    auth_service.authenticate_user()
+@router.post("/")
+async def login(
+        request: Request, 
+        data : OAuth2PasswordRequestForm = Depends(),
+        uow: DatabaseUnitOfWork = Depends(get_uow)
+    ):
+    auth_header = request.headers.get("Authorization")
+
     if not auth_header:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -36,7 +44,14 @@ async def login(request: Request, uow: DatabaseUnitOfWork = Depends(get_uow)):
         auth_type, credentials = auth_header.split(" ", 1)
         if auth_type.lower() != "bearer":
             raise ValueError("Invalid authorization type")
-        user = auth_service.authenticate_user(auth_header.username, auth_header.password)
+        auth_service = AuthService(uow)
+        user = auth_service.authenticate_user(data.username, data.password)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Missing credentials",
+                headers={"WWW-Authenticate:" "Bearer"}
+            )
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
