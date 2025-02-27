@@ -5,4 +5,4 @@ install :
 
 .PHONY: format
 format :
-	black src/*.py tst/*.py
+	black src/*.py src/*/*.py src/*/*/*.py tst/*.py

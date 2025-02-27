@@ -3,6 +3,7 @@ from typing import Generic, TypeVar, List
 
 T = TypeVar("T")
 
+
 class AbstractRepository(ABC, Generic[T]):
 
     @abstractmethod
@@ -12,7 +13,7 @@ class AbstractRepository(ABC, Generic[T]):
     @abstractmethod
     def add(self, entity: T) -> T:
         raise NotImplementedError
-    
+
     @abstractmethod
     def list(self) -> List[T]:
         raise NotImplementedError
