@@ -8,8 +8,6 @@ from fastapi import (
     HTTPException
 )
 
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from api.dependencies import get_uow 
 from uow.database.authDatabaseUnitOfWork import DatabaseUnitOfWork
 from services.crud.user_operations import UserService
@@ -18,6 +16,9 @@ from api.schemas.token import (
     TokenDataResponseSchema,
     TokenResponseSchema
 )
+from api.schemas.login import (
+       LoginRequestSchema
+)
 
 router = APIRouter(
     prefix="/login",
@@ -25,37 +26,25 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
-
 @router.post("/")
 async def login(
-        request: Request, 
-        data : OAuth2PasswordRequestForm = Depends(),
+        credentials: LoginRequestSchema, 
         uow: DatabaseUnitOfWork = Depends(get_uow)
     ):
-    auth_header = request.headers.get("Authorization")
+    
 
-    if not auth_header:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing credentials"
-        )
-    try:
-        auth_type, credentials = auth_header.split(" ", 1)
-        if auth_type.lower() != "bearer":
-            raise ValueError("Invalid authorization type")
         auth_service = AuthService(uow)
-        user = auth_service.authenticate_user(data.username, data.password)
+        user = auth_service.authenticate_user(
+               credentials.reference, 
+               credentials.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Missing credentials",
                 headers={"WWW-Authenticate:" "Bearer"}
             )
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid Authorization header format"
-        )
-    
+        
+        token = auth_service.generate_token(user)
+
+        return {"access_token": token, "token_type": "bearer"}
    

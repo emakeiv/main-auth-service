@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.endpoints.v1 import auth, health, login, signup, users
-
 from src.dal.orm.mapper import start_mappers
+from api.endpoints.v1 import auth, health, login, signup, users
+from src.services.security.middleware.authorize_middleware import (
+    AuthorizeRequestMiddleware,
+)
 
 
 def create_server():
@@ -16,6 +18,8 @@ def create_server():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # server.add_middleware(AuthorizeRequestMiddleware)
 
     server.include_router(signup.router, prefix="/api/v1")
     server.include_router(login.router, prefix="/api/v1")

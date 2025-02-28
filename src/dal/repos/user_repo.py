@@ -1,4 +1,5 @@
-from typing import List, Any
+from typing import List, Any, Optional
+from sqlalchemy.orm.exc import NoResultFound
 
 from dal.models.user import User
 from dal.repos.abstract_repo import AbstractRepository
@@ -17,8 +18,8 @@ class UserRepository(AbstractRepository):
             print(e)
             raise e
 
-    def get(self, reference: Any):
-        return self.session.query(User).filter_by(reference=reference).one()
+    def get(self, reference: Any) -> Optional[User]:
+        return self.session.query(User).filter((User.username == reference) | (User.email == reference)).one()
 
     def list(self) -> List[User]:
         return self.session.query(User).all()
