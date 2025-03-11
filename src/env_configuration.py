@@ -12,9 +12,10 @@ class Settings(BaseSettings):
     db_password: str
     pythonpath: str
     algorithm: str = "RS256"
+    app_port: int
     db_user: str
     db_host: str
-    db_port: str
+    db_port: int
     db_name: str
     db_uri: str
 

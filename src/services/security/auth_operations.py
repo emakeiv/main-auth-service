@@ -12,7 +12,7 @@ class AuthService:
     def authenticate_user(self, reference: str, password: str) -> User:
         with self.uow as uow:
             user = uow.repos.get(reference)
-           
+
             if not user:
                 raise ValueError("Invalid email or password")
             if not match_password(password.get_secret_value(), user.hashed_password):

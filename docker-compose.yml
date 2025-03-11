@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  main-auth-service:
+    build: .
+    container_name: main-auth-service
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1

@@ -19,7 +19,11 @@ class UserRepository(AbstractRepository):
             raise e
 
     def get(self, reference: Any) -> Optional[User]:
-        return self.session.query(User).filter((User.username == reference) | (User.email == reference)).one()
+        return (
+            self.session.query(User)
+            .filter((User.username == reference) | (User.email == reference))
+            .one()
+        )
 
     def list(self) -> List[User]:
         return self.session.query(User).all()

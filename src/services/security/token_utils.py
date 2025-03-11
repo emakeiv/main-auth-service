@@ -34,7 +34,7 @@ def encode(id: str) -> dict:
     }
     print(f"payload: {payload}")
     key = __get_key("private_key.pem", "private")
-    
+
     return jwt.encode(payload=payload, key=key, algorithm="RS256")
 
 
