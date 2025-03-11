@@ -1,0 +1,2 @@
+CREATE DATABASE auth_db OWNER lab_bot;
+GRANT ALL PRIVILEGES ON DATABASE auth_db TO lab_bot;
