@@ -1,3 +1,9 @@
+APP_NAME=main-auth-service
+COMPOSE_FILE=.docker/docker-compose.yaml
+DOCKER_IMAGE=main-auth-service
+DOCKE_HUB_USER=emakeiv
+TAG=latest
+
 .PHONY: install
 install :
 	pip install --upgrade pip
@@ -17,8 +23,13 @@ test:
 
 .PHONY: build
 build:
-	docker build -t main-auth-service .
+	docker build -t main-auth-service -f .docker/app/dockerfile .
 	# $(eval DOCKER_IMAGE_ID := $(shell docker images -q main-auth-service))
+
+.PHONY: push
+push:
+	docker push $(DOCKE_HUB_USER)/$(DOCKER_IMAGE):$(TAG)
+	
 
 .PHONY: run
 run:
