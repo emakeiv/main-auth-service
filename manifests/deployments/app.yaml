@@ -2,29 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: main-auth-service
-  labels:
-    app: main-auth-service
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: main-auth-service
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 3
   template:
     metadata:
       labels:
         app: main-auth-service
     spec:
       containers:
-        - name: main-auth-service
-          image: emakeiv/main-auth-service
-          ports:
-            - containerPort: 5000
-          envFrom:
-            - configMapRef:
-                name: main-auth-service-configmap
-            - secretRef:
-                name: main-auth-service-secret
+      - name: main-auth-service
+        image: emakeiv/main-auth-service
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000

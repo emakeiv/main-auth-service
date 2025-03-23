@@ -8,11 +8,10 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     environment: str = "dev"
-    secret_key: str = "./src"
     db_password: str
     pythonpath: str
-    algorithm: str = "RS256"
     app_port: int
+    app_hostname:str
     db_user: str
     db_host: str
     db_port: int

@@ -1,8 +1,9 @@
 APP_NAME=main-auth-service
 COMPOSE_FILE=.docker/docker-compose.yaml
 DOCKER_IMAGE=main-auth-service
-DOCKE_HUB_USER=emakeiv
+DOCKER_HUB_USER=emakeiv
 TAG=latest
+FULL_IMAGE_NAME := $(DOCKER_HUB_USER)/$(DOCKER_IMAGE):$(TAG)
 
 .PHONY: install
 install :
@@ -23,17 +24,17 @@ test:
 
 .PHONY: build
 build:
-	docker build -t main-auth-service -f .docker/app/dockerfile .
+	docker build -t ${DOCKER_IMAGE} -f .docker/app/dockerfile .
 	# $(eval DOCKER_IMAGE_ID := $(shell docker images -q main-auth-service))
 
 .PHONY: push
 push:
-	docker push $(DOCKE_HUB_USER)/$(DOCKER_IMAGE):$(TAG)
+	docker push $(FULL_IMAGE_NAME)
 	
 
 .PHONY: run
 run:
-	docker run -p 127.0.0.1:8000:8000 main-auth-service
+	docker run -p 127.0.0.1:5000:5000 main-auth-service
 
 .PHONY: deploy
 deploy:

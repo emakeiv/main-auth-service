@@ -36,6 +36,5 @@ def create_server():
     server.include_router(root.router, prefix="/api/v1")
     return server
 
-
 map = start_mappers()
 app = create_server()
