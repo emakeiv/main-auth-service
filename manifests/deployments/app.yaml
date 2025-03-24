@@ -2,11 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: main-auth-service
+  labels: 
+    app: main-auth-service
 spec:
-  replicas: 4
+  replicas: 3
   selector:
     matchLabels:
       app: main-auth-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
   template:
     metadata:
       labels:
@@ -22,3 +28,8 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: app-configmap
+        - secretRef:
+            name: app-secret 

@@ -1,6 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: myapp
+  name: app-configmap 
 data:
-  key: value
+  DB_HOST: database
+  DB_USER: lab_bot
+  DB_NAME: auth_db
+  DB_PORT: "5432"
