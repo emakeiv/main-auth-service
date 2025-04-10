@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: database-volume-claim
   labels:
-    app: database
+    app: auth-service-database
 spec:
   storageClassName: manual
   accessModes:

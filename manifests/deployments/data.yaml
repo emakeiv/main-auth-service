@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-db
+  name: auth-service-database
 spec:
   selector:
     matchLabels:
-      app: postgres-db
+      app: auth-service-database
   template:
     metadata:
       labels:
-        app: postgres-db
+        app: auth-service-database
     spec:
       containers:
-      - name: postgres-db
+      - name: auth-service-database
         image: postgres:17
         imagePullPolicy: IfNotPresent
          resources:

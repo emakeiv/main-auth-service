@@ -1,12 +1,32 @@
 version: "3.8"
 
 services:
-  main-auth-service:
-    build:
-      context: ..
-      dockerfile: .docker/app/dockerfile
-    container_name: main-auth-service
-    ports:
-      - "5000:5000"
-    environment:
-      - PYTHONUNBUFFERED=1
+
+    database:
+        image: postgres:latest
+        restart: unless-stopped
+        ports:
+            - 5431:5432
+        volumes:
+            - pg_data:/var/lib/postgresql/data
+            - ./database/operations:/docker-entrypoint-initdb.d
+        env_file:
+            - .env
+
+
+  # main-auth-service:
+  #   build:
+  #     context: ..
+  #     dockerfile: .docker/app/dockerfile
+  #   container_name: main-auth-service
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+
+volumes:
+    pg_data:
+
+networks:
+  backend:
+    driver: bridge
